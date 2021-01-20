@@ -15,12 +15,12 @@ namespace WebScrapping
             string data = "";
             int beginning = 1;
             int ending = 10;
+            int count = 0;
 
             // int.MaxValue
             for (int i = 0; i < 3; i++)
             {
                 string url = $"https://www.cbn.gov.ng/rates/GovtSecuritiesDrillDown.asp?beginrec={beginning}&endrec={ending}&market=";
-                int count = 0;
                 HtmlWeb web = new HtmlWeb();
                 HtmlDocument doc = web.Load(url);
                 var headerNames = doc.DocumentNode.SelectNodes("//table[@id='mytables']//tr/td");
@@ -32,7 +32,7 @@ namespace WebScrapping
                         data += "+";
                         count++;
                     } 
-                    else
+                    else if(item.InnerText != "")
                     {
                         data += item.InnerText + "=";
                         count = 0;
@@ -54,13 +54,13 @@ namespace WebScrapping
 
             foreach (var item in dataArray)
             {
-                if (item == "")
-                    continue;
-                else
-                {
+                if(item != "")
+                {                    
                     ObjectModel model = new ObjectModel();
+
                     var newItem = item.Remove(item.Length - 1, 1);
                     var itemObject = newItem.Split('=');
+
 
                     model.AuctionDate = itemObject[0];
                     model.SecurityType = itemObject[1];
@@ -78,7 +78,8 @@ namespace WebScrapping
                     model.AmountOffered = itemObject[13];
 
                     modelObject.Add(model);
-                }
+                }            
+
             }
 
             return modelObject;
@@ -132,6 +133,8 @@ namespace WebScrapping
 
                 currentRow++;
             }
+
+            securities.View.FreezePanes(2, 1);
 
             pck.SaveAs(spreadsheetInfo);
             Console.WriteLine("Save");
