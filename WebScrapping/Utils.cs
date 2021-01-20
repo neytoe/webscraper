@@ -18,7 +18,7 @@ namespace WebScrapping
             int count = 0;
 
             // int.MaxValue
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < page; i++)
             {
                 string url = $"https://www.cbn.gov.ng/rates/GovtSecuritiesDrillDown.asp?beginrec={beginning}&endrec={ending}&market=";
                 HtmlWeb web = new HtmlWeb();
